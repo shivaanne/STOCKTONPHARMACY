@@ -48,7 +48,7 @@ class CustomHeader extends HTMLElement {
               </svg>
               <div class="contact-item-text">
                 <span class="contact-item-label">Email:</span>
-                <span class="contact-item-value"><a href="mailto:info@stocktonrxpharmacy.com">info@stocktonrxpharmacy.com</a></span>
+                <span class="contact-item-value"><a href="mailto:info@stocktonpharmacy.com">info@stocktonpharmacy.com</a></span>
               </div>
             </div>
             

@@ -108,7 +108,7 @@
                 </svg>
                 <div>
                   <strong style="display: block; color: var(--brand-blue-dark);">Email</strong>
-                  <a href="mailto:info@stocktonrxpharmacy.com" style="color: var(--brand-blue-accent); font-weight: 600; font-size: 15px; word-break: break-all;">info@stocktonrxpharmacy.com</a>
+                  <a href="mailto:info@stocktonpharmacy.com" style="color: var(--brand-blue-accent); font-weight: 600; font-size: 15px; word-break: break-all;">info@stocktonpharmacy.com</a>
                 </div>
               </li>
               
@@ -146,8 +146,10 @@
         <div class="form-card" style="padding: 40px; box-shadow: var(--shadow-sm);">
           <h2 style="font-size: 24px; margin-bottom: 24px;">Send Us a Message</h2>
           <form id="contactForm" novalidate>
-            <!-- Formspree hidden fields -->
             <input type="hidden" name="_subject" value="New Contact Message - Stockton Pharmacy">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
             <!-- Name -->
             <div class="form-group">
               <label class="form-label" for="contactName">Name <span class="required">*</span></label>
@@ -222,8 +224,8 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h3>Message Sent Successfully</h3>
-      <p>Thank you for reaching out! Your message has been received. Our team will review it and get back to you as soon as possible.</p>
+      <h3 id="modalTitle">Message Sent Successfully</h3>
+      <p id="modalBody">Thank you for reaching out! Your message has been received. Our team will review it and get back to you as soon as possible.</p>
       <button class="btn btn-primary" id="closeModalBtn">Done</button>
     </div>
   </div>
@@ -231,7 +233,7 @@
   <!-- Custom Footer -->
   <custom-footer></custom-footer>
 
-  <!-- Form Validation + Formspree Email Submission Script -->
+  <!-- Form Validation + Email Submission Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('contactForm');
@@ -239,9 +241,12 @@
       const closeModalBtn = document.getElementById('closeModalBtn');
       const submitBtn = document.getElementById('contactSubmitBtn');
       const subjectInput = document.getElementById('contactSubject');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
 
-      // Formspree endpoint — forwards to info@stocktonrxpharmacy.com
-      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpwzgday';
+      const PHARMACY_EMAIL = 'info@stocktonpharmacy.com';
+      // FormSubmit delivers submissions straight to the inbox above (no account needed).
+      const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + PHARMACY_EMAIL;
 
       // Pre-fill Subject from URL search params
       const urlParams = new URLSearchParams(window.location.search);
@@ -286,35 +291,37 @@
         submitBtn.textContent = 'Sending...';
 
         try {
-          const response = await fetch(FORMSPREE_ENDPOINT, {
+          const response = await fetch(FORM_ENDPOINT, {
             method: 'POST',
             body: new FormData(form),
             headers: { 'Accept': 'application/json' }
           });
+          // FormSubmit answers 200 even when it can't deliver (e.g. before
+          // activation), so the JSON success flag must be checked too
+          const result = await response.json();
+          if (!response.ok || String(result.success) !== 'true') throw new Error('form service unavailable');
 
-          if (response.ok) {
-            successModal.classList.add('active');
-            form.reset();
-            fields.forEach(f => document.getElementById(f.id).classList.remove('error-border'));
-          } else {
-            sendMailtoFallback();
-          }
+          modalTitle.textContent = 'Message Sent Successfully';
+          modalBody.textContent = 'Thank you for reaching out! Your message has been received. Our team will review it and get back to you as soon as possible.';
+          form.reset();
+          fields.forEach(f => document.getElementById(f.id).classList.remove('error-border'));
         } catch (err) {
-          sendMailtoFallback();
+          // Direct delivery failed — hand off to the visitor's email app instead
+          const name    = document.getElementById('contactName').value;
+          const email   = document.getElementById('contactEmail').value;
+          const subject = document.getElementById('contactSubject').value;
+          const message = document.getElementById('contactMessage').value;
+          const body    = `From: ${name} (${email})\n\n${message}`;
+          window.location.href = `mailto:${PHARMACY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+          modalTitle.textContent = 'One Last Step';
+          modalBody.textContent = 'Your email app has opened with your message ready to go — just press Send. If it didn’t open, email us at info@stocktonpharmacy.com or call 209-868-1555.';
         } finally {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Send Message';
+          successModal.classList.add('active');
         }
       });
-
-      function sendMailtoFallback() {
-        const name    = document.getElementById('contactName').value;
-        const email   = document.getElementById('contactEmail').value;
-        const subject = document.getElementById('contactSubject').value;
-        const message = document.getElementById('contactMessage').value;
-        const body    = `From: ${name} (${email})%0A%0A${message}`;
-        window.location.href = `mailto:info@stocktonrxpharmacy.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-      }
 
       closeModalBtn.addEventListener('click', () => {
         successModal.classList.remove('active');

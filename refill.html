@@ -31,14 +31,15 @@
     <div class="container form-container-box">
       <p class="form-intro-text">
         Send us your Rx info and we'll have it ready for pickup or delivery.<br>
-        Call <a href="tel:209-868-1555">209-868-1555</a> or email <a href="mailto:info@stocktonrxpharmacy.com">info@stocktonrxpharmacy.com</a>.
+        Call <a href="tel:209-868-1555">209-868-1555</a> or email <a href="mailto:info@stocktonpharmacy.com">info@stocktonpharmacy.com</a>.
       </p>
       
       <div class="form-card">
         <form id="refillForm" novalidate>
-          <!-- Formspree hidden fields -->
           <input type="hidden" name="_subject" value="New Refill Request - Stockton Pharmacy">
-          <input type="hidden" name="_replyto" id="_replyto" value="">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <div class="form-grid-2">
             <!-- Patient Name -->
             <div class="form-group">
@@ -115,8 +116,8 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h3>Refill Request Submitted</h3>
-      <p>Thank you! Your prescription refill request has been successfully submitted. We will process it shortly. If we have any questions, we will reach out using the contact details provided.</p>
+      <h3 id="modalTitle">Refill Request Submitted</h3>
+      <p id="modalBody">Thank you! Your prescription refill request has been successfully submitted. We will process it shortly. If we have any questions, we will reach out using the contact details provided.</p>
       <button class="btn btn-primary" id="closeModalBtn">Done</button>
     </div>
   </div>
@@ -124,17 +125,19 @@
   <!-- Custom Footer -->
   <custom-footer></custom-footer>
 
-  <!-- Form Validation + Formspree Email Submission Script -->
+  <!-- Form Validation + Email Submission Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('refillForm');
       const successModal = document.getElementById('successModal');
       const closeModalBtn = document.getElementById('closeModalBtn');
       const submitBtn = document.getElementById('refillSubmitBtn');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
 
-      // Formspree endpoint — forwards to info@stocktonrxpharmacy.com
-      // Sign up at formspree.io, create a form for this email, and replace the ID below.
-      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpwzgday';
+      const PHARMACY_EMAIL = 'info@stocktonpharmacy.com';
+      // FormSubmit delivers submissions straight to the inbox above (no account needed).
+      const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + PHARMACY_EMAIL;
 
       const fields = [
         { id: 'patientName', errorId: 'patientNameError' },
@@ -164,46 +167,42 @@
         e.preventDefault();
         if (!validate()) return;
 
-        // Loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
 
-        const data = new FormData(form);
-
         try {
-          const response = await fetch(FORMSPREE_ENDPOINT, {
+          const response = await fetch(FORM_ENDPOINT, {
             method: 'POST',
-            body: data,
+            body: new FormData(form),
             headers: { 'Accept': 'application/json' }
           });
+          // FormSubmit answers 200 even when it can't deliver (e.g. before
+          // activation), so the JSON success flag must be checked too
+          const result = await response.json();
+          if (!response.ok || String(result.success) !== 'true') throw new Error('form service unavailable');
 
-          if (response.ok) {
-            // Success — show modal
-            successModal.classList.add('active');
-            form.reset();
-            fields.forEach(f => document.getElementById(f.id).classList.remove('error-border'));
-          } else {
-            // Formspree returned an error — fallback to mailto
-            sendMailtoFallback();
-          }
+          modalTitle.textContent = 'Refill Request Submitted';
+          modalBody.textContent = 'Thank you! Your prescription refill request has been successfully submitted. We will process it shortly. If we have any questions, we will reach out using the contact details provided.';
+          form.reset();
+          fields.forEach(f => document.getElementById(f.id).classList.remove('error-border'));
         } catch (err) {
-          // Network error — fallback to mailto
-          sendMailtoFallback();
+          // Direct delivery failed — hand off to the visitor's email app instead
+          const name   = document.getElementById('patientName').value;
+          const dob    = document.getElementById('dob').value;
+          const phone  = document.getElementById('phone').value;
+          const rx     = document.getElementById('rxNumber').value;
+          const notes  = document.getElementById('notes').value;
+          const body   = `Patient Name: ${name}\nDate of Birth: ${dob}\nPhone: ${phone}\nRx Number: ${rx}\nNotes: ${notes}`;
+          window.location.href = `mailto:${PHARMACY_EMAIL}?subject=${encodeURIComponent(`Refill Request - ${name}`)}&body=${encodeURIComponent(body)}`;
+
+          modalTitle.textContent = 'One Last Step';
+          modalBody.textContent = 'Your email app has opened with your refill request ready to go — just press Send. If it didn’t open, call us at 209-868-1555 or email info@stocktonpharmacy.com.';
         } finally {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit Refill Request';
+          successModal.classList.add('active');
         }
       });
-
-      function sendMailtoFallback() {
-        const name   = document.getElementById('patientName').value;
-        const dob    = document.getElementById('dob').value;
-        const phone  = document.getElementById('phone').value;
-        const rx     = document.getElementById('rxNumber').value;
-        const notes  = document.getElementById('notes').value;
-        const body   = `Patient Name: ${name}%0ADate of Birth: ${dob}%0APhone: ${phone}%0ARx Number: ${rx}%0ANotes: ${notes}`;
-        window.location.href = `mailto:info@stocktonrxpharmacy.com?subject=Refill Request - ${name}&body=${body}`;
-      }
 
       closeModalBtn.addEventListener('click', () => {
         successModal.classList.remove('active');
