@@ -220,6 +220,17 @@
 
   <!-- Custom Footer component -->
   <custom-footer></custom-footer>
+  <script>
+    // let the film sit under Stockton's pinned nav bar (cinema.css reads these)
+    document.addEventListener('DOMContentLoaded', () => {
+      const set = () => {
+        const nav = document.querySelector('.nav-bar'), info = document.querySelector('.header-info-bar');
+        document.documentElement.style.setProperty('--nav-h', (nav ? nav.offsetHeight : 0) + 'px');
+        document.documentElement.style.setProperty('--info-h', (info ? info.offsetHeight : 0) + 'px');
+      };
+      set(); addEventListener('resize', set);
+    });
+  </script>
 
 </body>
 </html>

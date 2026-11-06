@@ -207,3 +207,11 @@ h1.display { font-size: clamp(3.2rem, 1.4rem + 5.2vw, 6.4rem); }
 .hero-3d--short { aspect-ratio: 16 / 10; max-height: 300px; }
 @media (max-width: 860px) { .hero-3d { max-height: 280px; aspect-ratio: 4/3; } .hero-3d--short { display: none; } }
 @media print { .hero-3d { display: none !important; } }
+
+/* Stockton's header: the nav bar stays pinned, so the film sits below it */
+.cine .film-stage { top: var(--nav-h, 0px); height: calc(100svh - var(--nav-h, 0px)); }
+@media (min-width: 761px) { .cine .dock--film { bottom: calc(clamp(18px, 4vh, 40px) + var(--info-h, 0px)); } }
+@media (min-width: 761px) {
+  .cine .cap[data-in="0"] { top: 32%; }
+  .cine .cap[data-in="0"] .display { font-size: clamp(2.4rem, 1rem + 3.6vw, 4.4rem); }
+}
