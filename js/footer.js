@@ -14,6 +14,7 @@ class CustomFooter extends HTMLElement {
           <div class="switch-ctas">
             <a href="contact.html?subject=Transfer%20Prescription" class="btn btn-primary">Transfer my Rx</a>
             <a href="refill.html" class="btn btn-outline">Request a refill</a>
+            <a href="vaccines.html" class="btn btn-outline">Book a vaccine</a>
           </div>
         </div>
       </section>
@@ -93,6 +94,7 @@ class CustomFooter extends HTMLElement {
               <li><a href="about.html">About Us</a></li>
               <li><a href="services.html">Services</a></li>
               <li><a href="refill.html">Refill Rx</a></li>
+              <li><a href="vaccines.html">Book a Vaccine</a></li>
               <li><a href="resources.html">Resources</a></li>
               <li><a href="contact.html">Contact Us</a></li>
             </ul>

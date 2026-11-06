@@ -80,6 +80,7 @@ class CustomHeader extends HTMLElement {
             <li><a href="about.html" class="${activePage === 'about' ? 'active' : ''}">About Us</a></li>
             <li><a href="services.html" class="${activePage === 'services' ? 'active' : ''}">Services</a></li>
             <li><a href="refill.html" class="${activePage === 'refill' ? 'active' : ''}">Refill RX</a></li>
+            <li><a href="vaccines.html" class="${activePage === 'vaccines' ? 'active' : ''}">Vaccines</a></li>
             <li><a href="resources.html" class="${activePage === 'resources' ? 'active' : ''}">Resources</a></li>
             <li><a href="contact.html" class="${activePage === 'contact' ? 'active' : ''}">Contact Us</a></li>
           </ul>

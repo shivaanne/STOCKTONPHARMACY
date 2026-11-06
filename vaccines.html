@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Vaccine - Stockton Pharmacy</title>
+  <meta name="description" content="Book a flu, COVID-19, shingles, RSV or other vaccine at Stockton Pharmacy. Seven short steps, about five minutes — screening and consent go straight to our pharmacist.">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/header.js" defer></script>
+  <script src="js/footer.js" defer></script>
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+  <link rel="stylesheet" href="css/cinema.css">
+  <script type="module" src="js/page3d.js"></script>
+  <style>
+    .vx-intro { max-width: 760px; margin: 0 auto 32px; text-align: center; color: var(--text-medium); line-height: 1.7; }
+    .page-header--split { text-align: left; padding: 40px 0; }
+    .page-header--split .container { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; position: relative; }
+    .page-header--split .breadcrumbs { justify-content: flex-start; margin-bottom: 16px; }
+    .page-header--split .lead { color: rgba(255, 255, 255, 0.85); font-size: 17px; line-height: 1.7; max-width: 520px; }
+    .page-header--split .vx-badges { justify-content: flex-start; }
+    .page-header--split .vx-badges li { background: rgba(255, 255, 255, 0.12); color: white; }
+    .vx-badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; padding: 0; list-style: none; }
+    .vx-badges li { background: var(--brand-green-light); color: var(--brand-green-hover); font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: var(--radius-full); }
+
+    .vx-wizard { display: grid; grid-template-columns: 220px 1fr; gap: 32px; max-width: 1040px; margin: 0 auto; align-items: start; }
+    .vx-rail ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; position: sticky; top: 24px; }
+    .vx-rail li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm); color: var(--text-light); font-weight: 500; }
+    .vx-rail .num { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); display: grid; place-items: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .vx-rail li.active { background: var(--brand-blue-light); color: var(--brand-blue-dark); }
+    .vx-rail li.active .num { border-color: var(--brand-green); background: var(--brand-green); color: white; }
+    .vx-rail li.done .num { border-color: var(--brand-green); color: var(--brand-green); }
+    .vx-progress { height: 6px; background: var(--border-color); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 24px; }
+    .vx-progress span { display: block; height: 100%; background: var(--brand-green); transition: width var(--transition-normal); }
+
+    .vx-step { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .vx-step legend { font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--brand-blue-dark); padding: 0; margin-bottom: 4px; }
+    .vx-stepno { font-size: 13px; font-weight: 600; color: var(--brand-green); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+    .vx-sub { color: var(--text-light); margin-bottom: 24px; }
+    .vx-hint { font-size: 13px; color: var(--text-light); }
+
+    .vx-opts { display: grid; gap: 10px; margin-bottom: 24px; }
+    .vx-opt, .vx-card, .vx-ack { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px 16px; cursor: pointer; transition: var(--transition-fast); }
+    .vx-opt:has(input:checked), .vx-card:has(input:checked), .vx-ack:has(input:checked) { border-color: var(--brand-green); background: #F0FDFA; }
+    .vx-opt input, .vx-card input, .vx-ack input { margin-top: 3px; accent-color: var(--brand-green); width: 18px; height: 18px; flex-shrink: 0; }
+    .vx-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .vx-card .name { display: block; font-weight: 600; color: var(--text-dark); }
+    .vx-card .note { display: block; font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .vx-card.ineligible { opacity: .45; cursor: not-allowed; }
+
+    .vx-q { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+    .vx-q p { color: var(--text-medium); font-size: 15px; }
+    .vx-yn { display: flex; gap: 6px; flex-shrink: 0; }
+    .vx-yn label { border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 6px 16px; cursor: pointer; font-weight: 600; font-size: 14px; }
+    .vx-yn input { position: absolute; opacity: 0; pointer-events: none; }
+    .vx-yn label:has(input:checked) { background: var(--brand-blue-dark); border-color: var(--brand-blue-dark); color: white; }
+    .vx-yn label:has(input:focus-visible) { outline: 2px solid var(--brand-green); outline-offset: 2px; }
+
+    .vx-review section { padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+    .vx-review h3 { font-size: 15px; color: var(--brand-green); margin-bottom: 6px; }
+    .vx-review p { color: var(--text-medium); white-space: pre-line; }
+
+    .vx-error { display: none; background: var(--danger-bg); color: var(--danger); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 16px; font-weight: 500; font-size: 14px; }
+    .vx-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+    .vx-actions .btn[hidden] { display: none; }
+    .vx-actions .btn-back { background: white; border: 1px solid var(--border-color); color: var(--text-medium); }
+    .vx-done { text-align: center; max-width: 640px; margin: 0 auto; }
+    .vx-foot { text-align: center; margin-top: 32px; color: var(--text-light); }
+    .vx-foot a, .vx-step a { color: var(--brand-blue-accent); font-weight: 600; }
+
+    @media (max-width: 860px) {
+      .page-header--split .container { grid-template-columns: 1fr; }
+      .vx-wizard { grid-template-columns: minmax(0, 1fr); }
+      .vx-rail ol { position: static; flex-direction: row; overflow-x: auto; }
+      .vx-rail li span:last-child { display: none; }
+      .vx-rail li.active span:last-child { display: inline; }
+      .vx-cards { grid-template-columns: 1fr; }
+      .form-card.vx-panel { padding: 24px 16px; }
+      .vx-q { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <custom-header active="vaccines"></custom-header>
+
+  <section class="page-header page-header--split">
+    <div class="container">
+      <div>
+        <div class="breadcrumbs">
+          <a href="index.html">Home</a>
+          <span>»</span>
+          <a href="services.html">Services</a>
+          <span>»</span>
+          <span>Book a Vaccine</span>
+        </div>
+        <h1>Book a Vaccine</h1>
+        <p class="lead">Seven short steps, about five minutes. Your screening answers and signed consent go straight to our pharmacist, so your visit takes minutes.</p>
+        <ul class="vx-badges">
+          <li>Most vaccines covered at no cost</li>
+          <li>Mon–Fri 9:00 AM – 5:00 PM</li>
+          <li>No account needed</li>
+        </ul>
+      </div>
+      <div class="hero-3d hero-3d--short" data-scene="vaccines" role="img" aria-label="A syringe and vaccine vial. Drag to spin."></div>
+    </div>
+  </section>
+
+  <section class="section-padding">
+    <div class="container">
+      <noscript><p class="vx-intro">The booking form needs JavaScript. Please call us at <a href="tel:209-868-1555">209-868-1555</a> to book your vaccine.</p></noscript>
+
+      <div class="vx-wizard" id="vxWizard">
+        <nav class="vx-rail" aria-label="Booking steps"><ol id="vxRail"></ol></nav>
+
+        <form class="form-card vx-panel" id="vxForm" novalidate>
+          <div class="vx-progress" aria-hidden="true"><span id="vxBar"></span></div>
+          <input type="hidden" name="_subject" value="New Vaccine Booking - Stockton Pharmacy">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+          <!-- 1. Patient -->
+          <fieldset class="vx-step" data-title="Patient">
+            <legend>Who is getting vaccinated?</legend>
+            <p class="vx-sub">Booking for a child or family member? Enter their details here.</p>
+            <div class="form-grid-2" style="margin-bottom:0">
+              <div class="form-group"><label class="form-label" for="firstName">First name <span class="required">*</span></label><input class="form-input" id="firstName" name="First name" required autocomplete="given-name"></div>
+              <div class="form-group"><label class="form-label" for="lastName">Last name <span class="required">*</span></label><input class="form-input" id="lastName" name="Last name" required autocomplete="family-name"></div>
+              <div class="form-group"><label class="form-label" for="dob">Date of birth <span class="required">*</span></label><input class="form-input" type="date" id="dob" name="Date of birth" required autocomplete="bday"></div>
+              <div class="form-group"><label class="form-label" for="gender">Gender</label>
+                <select class="form-input" id="gender" name="Gender"><option value="">Select</option><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+              <div class="form-group"><label class="form-label" for="phone">Phone <span class="required">*</span></label><input class="form-input" type="tel" id="phone" name="Phone" required pattern="[\d\s\(\)+.\-]{10,}" placeholder="209-555-0142" autocomplete="tel"></div>
+              <div class="form-group"><label class="form-label" for="email">Email</label><input class="form-input" type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email"></div>
+              <div class="form-group full-width"><label class="form-label" for="address">Street address</label><input class="form-input" id="address" name="Address" autocomplete="street-address"></div>
+              <div class="form-group"><label class="form-label" for="city">City</label><input class="form-input" id="city" name="City" value="Stockton" autocomplete="address-level2"></div>
+              <div class="form-group"><label class="form-label" for="zip">ZIP</label><input class="form-input" id="zip" name="ZIP" inputmode="numeric" pattern="\d{5}" autocomplete="postal-code"></div>
+            </div>
+          </fieldset>
+
+          <!-- 2. Insurance -->
+          <fieldset class="vx-step" data-title="Insurance" hidden>
+            <legend>How will this be covered?</legend>
+            <p class="vx-sub">Most plans cover recommended vaccines at no cost. Have your card handy — or skip the numbers and bring it with you.</p>
+            <div class="vx-opts">
+              <label class="vx-opt"><input type="radio" name="Coverage" value="Private insurance" required> <span>Private insurance</span></label>
+              <label class="vx-opt"><input type="radio" name="Coverage" value="Medicare"> <span>Medicare</span></label>
+              <label class="vx-opt"><input type="radio" name="Coverage" value="Medi-Cal / Medicaid"> <span>Medi-Cal / Medicaid</span></label>
+              <label class="vx-opt"><input type="radio" name="Coverage" value="Self-pay / no insurance"> <span>Self-pay / no insurance</span></label>
+            </div>
+            <div class="form-grid-2" id="insFields" hidden style="margin-bottom:0">
+              <div class="form-group"><label class="form-label" for="insurer">Plan / insurance company</label><input class="form-input" id="insurer" name="Insurance plan"></div>
+              <div class="form-group"><label class="form-label" for="memberId">Member ID</label><input class="form-input" id="memberId" name="Member ID"></div>
+            </div>
+          </fieldset>
+
+          <!-- 3. Vaccines -->
+          <fieldset class="vx-step" data-title="Vaccines" hidden>
+            <legend>Which vaccines do you need?</legend>
+            <p class="vx-sub">Pick one or more. Options that don't fit the patient's age are greyed out. Not sure? Choose your best guess — the pharmacist will check your records.</p>
+            <div class="vx-cards" id="vxVaccines"></div>
+          </fieldset>
+
+          <!-- 4. Screening -->
+          <fieldset class="vx-step" data-title="Screening" hidden>
+            <legend>Quick health screening</legend>
+            <p class="vx-sub">A "Yes" doesn't mean you can't be vaccinated — it just tells the pharmacist what to review with you.</p>
+            <div id="vxScreen"></div>
+            <div class="form-group" style="margin-top:20px"><label class="form-label" for="notes">Anything else the pharmacist should know? (optional)</label><textarea class="form-input" id="notes" name="Notes for pharmacist" rows="3"></textarea></div>
+          </fieldset>
+
+          <!-- 5. Appointment -->
+          <fieldset class="vx-step" data-title="Appointment" hidden>
+            <legend>Pick a time</legend>
+            <p class="vx-sub">Weekdays 9:00 AM – 5:00 PM. This is your preferred time — we'll call or text to confirm it.</p>
+            <div class="form-grid-2" style="margin-bottom:0">
+              <div class="form-group"><label class="form-label" for="apptDate">Day <span class="required">*</span></label><input class="form-input" type="date" id="apptDate" name="Preferred date" required></div>
+              <div class="form-group"><label class="form-label" for="apptTime">Time <span class="required">*</span></label><select class="form-input" id="apptTime" name="Preferred time" required><option value="">Select a time</option></select></div>
+            </div>
+          </fieldset>
+
+          <!-- 6. Consent -->
+          <fieldset class="vx-step" data-title="Consent" hidden>
+            <legend>Vaccine information &amp; consent</legend>
+            <p class="vx-sub">Please read the CDC <a href="https://www.cdc.gov/vaccines/hcp/current-vis/index.html" target="_blank" rel="noopener">Vaccine Information Statement (VIS)</a> for each vaccine you selected. We'll also hand you a printed copy at your visit.</p>
+            <div class="vx-opts">
+              <label class="vx-ack"><input type="checkbox" name="VIS received" value="Yes" required><span>I received and had the chance to read the Vaccine Information Statement for each vaccine selected, and I know I can ask the pharmacist any questions.</span></label>
+              <label class="vx-ack"><input type="checkbox" name="Consent" value="Agreed" required><span>I consent to receive the vaccine(s) selected, given by a licensed pharmacist at Stockton Pharmacy, and I confirm the screening information I provided is accurate.</span></label>
+            </div>
+            <div class="form-grid-2" style="margin-bottom:0">
+              <div class="form-group"><label class="form-label" for="sigName">Type your full name to sign <span class="required">*</span></label><input class="form-input" id="sigName" name="Signed by" required autocomplete="name" style="font-family: 'Brush Script MT', cursive; font-size: 22px;"></div>
+              <div class="form-group"><label class="form-label" for="sigRel">Relationship to patient</label><select class="form-input" id="sigRel" name="Relationship to patient"><option>Self</option><option>Parent</option><option>Legal guardian</option><option>Caregiver / authorized representative</option></select></div>
+            </div>
+          </fieldset>
+
+          <!-- 7. Review -->
+          <fieldset class="vx-step" data-title="Review" hidden>
+            <legend>Review &amp; send</legend>
+            <p class="vx-sub">Check everything is correct, then send your booking to the pharmacy.</p>
+            <div class="vx-review" id="vxReview"></div>
+          </fieldset>
+
+          <div class="vx-error" id="vxError" role="alert"></div>
+          <div class="vx-actions">
+            <button type="button" class="btn btn-back" id="vxBack">Back</button>
+            <button type="submit" class="btn btn-primary" id="vxNext">Continue</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-card vx-done" id="vxDone" hidden>
+        <div class="success-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2 id="vxDoneTitle" style="margin-bottom:12px">Booking sent</h2>
+        <p id="vxDoneBody" style="color: var(--text-medium); line-height:1.7"></p>
+        <p class="vx-hint" style="margin-top:12px">Please bring a photo ID and your insurance card.</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:24px">
+          <button type="button" class="btn btn-primary" onclick="window.print()">Print a copy</button>
+          <a href="vaccines.html" class="btn btn-blue">Book for someone else</a>
+        </div>
+      </div>
+
+      <p class="vx-foot">Prefer to talk to someone? Call <a href="tel:209-868-1555">209-868-1555</a>. Booking for a care home or workplace? <a href="contact.html?subject=On-site%20Vaccine%20Clinic">Request an on-site clinic</a>.</p>
+    </div>
+  </section>
+
+  <custom-footer></custom-footer>
+
+  <script>
+  (() => {
+    const PHARMACY_EMAIL = 'info@stocktonpharmacy.com';
+    const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + PHARMACY_EMAIL;
+    const OPEN = { first: 9 * 60, last: 16 * 60 + 30, step: 30 }; // appointment slot start times (minutes)
+
+    // Age range in months, per CDC/ACIP schedules. Pharmacist confirms eligibility for every booking.
+    const VACCINES = [
+      ['Influenza (Flu)', 6, 1320, 'Every year, age 6 months+'],
+      ['COVID-19', 6, 1320, 'Per current CDC schedule'],
+      ['RSV', 600, 1320, 'Age 60+, 50–59 if higher risk, or pregnant 32–36 wks'],
+      ['Shingles (Shingrix)', 600, 1320, 'Age 50+, or 19+ if immunocompromised'],
+      ['Pneumococcal (PCV20 / PCV21)', 24, 1320, 'Adults 50+, or younger if high risk'],
+      ['Tdap (Tetanus / Diphtheria / Pertussis)', 84, 1320, 'Age 7+, every pregnancy'],
+      ['Td booster', 84, 1320, 'Every 10 years'],
+      ['Hepatitis A', 12, 1320, 'Age 12 months+'],
+      ['Hepatitis B', 0, 1320, 'All ages'],
+      ['HPV', 108, 540, 'Ages 9–45'],
+      ['MMR (Measles / Mumps / Rubella)', 12, 1320, 'Age 12 months+'],
+      ['Varicella (Chickenpox)', 12, 1320, 'Age 12 months+'],
+      ['Meningococcal ACWY', 132, 1320, 'Age 11–12, booster at 16'],
+      ['Meningococcal B', 192, 300, 'Typically ages 16–23']
+    ];
+    const SCREEN_ADULT = [
+      'Are you feeling sick today, or do you have a fever?',
+      'Do you have a bleeding disorder, or take a blood thinner?',
+      'Have you ever had a severe allergic reaction to a vaccine or vaccine ingredient (e.g., eggs, gelatin, latex)?',
+      'Have you ever been diagnosed with Guillain-Barré syndrome?',
+      'Are you pregnant, or could you be pregnant?',
+      'Do you have a weakened immune system (cancer treatment, HIV, transplant, long-term steroids)?',
+      'Have you received any other vaccine in the past 4 weeks?',
+      'Have you had a blood transfusion or immune globulin in the past 11 months?',
+      'Have you ever had a serious reaction after a vaccination?'
+    ];
+    const SCREEN_CHILD = [
+      'Is the child sick today?',
+      'Does the child have allergies to foods, medicines, or a previous vaccine?',
+      'Has the child ever had a serious reaction to a vaccine?',
+      'Does the child have a weakened immune system or a chronic illness?',
+      'Has the child ever had a seizure or a brain/nervous-system problem?',
+      'Does the child have a bleeding disorder?',
+      'Has the child received any vaccine in the past 4 weeks?',
+      'Does anyone in the household have a weakened immune system?'
+    ];
+
+    const $ = id => document.getElementById(id);
+    const form = $('vxForm'), steps = [...form.querySelectorAll('.vx-step')];
+    const err = $('vxError'), next = $('vxNext'), back = $('vxBack');
+    const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    let step = 0;
+
+    function ageMonths() {
+      const v = $('dob').value; if (!v) return null;
+      const b = new Date(v + 'T00:00'), n = new Date();
+      return (n.getFullYear() - b.getFullYear()) * 12 + n.getMonth() - b.getMonth() - (n.getDate() < b.getDate() ? 1 : 0);
+    }
+    const isMinor = () => ageMonths() < 216;
+
+    // --- static setup ---
+    $('dob').max = iso(new Date());
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    const lastDay = new Date(); lastDay.setDate(lastDay.getDate() + 30);
+    $('apptDate').min = iso(tomorrow); $('apptDate').max = iso(lastDay);
+    for (let t = OPEN.first; t <= OPEN.last; t += OPEN.step) {
+      const h = Math.floor(t / 60), m = String(t % 60).padStart(2, '0');
+      $('apptTime').add(new Option(`${(h + 11) % 12 + 1}:${m} ${h < 12 ? 'AM' : 'PM'}`));
+    }
+    $('vxVaccines').innerHTML = VACCINES.map(([name, , , note]) =>
+      `<label class="vx-card"><input type="checkbox" name="Vaccines" value="${esc(name)}"><span><span class="name">${esc(name)}</span><span class="note">${esc(note)}</span></span></label>`).join('');
+    form.querySelectorAll('[name=Coverage]').forEach(r => r.addEventListener('change', () => {
+      $('insFields').hidden = /Self-pay/.test(r.value);
+    }));
+    $('vxRail').innerHTML = steps.map((s, i) => `<li><span class="num">${i + 1}</span><span>${s.dataset.title}</span></li>`).join('');
+
+    // --- per-step hooks: run when entering a step ---
+    function onEnter(i) {
+      const title = steps[i].dataset.title;
+      if (title === 'Vaccines') {
+        const age = ageMonths();
+        $('vxVaccines').querySelectorAll('.vx-card').forEach((card, k) => {
+          const [, min, max] = VACCINES[k], ok = age >= min && age <= max, box = card.querySelector('input');
+          card.classList.toggle('ineligible', !ok); box.disabled = !ok; if (!ok) box.checked = false;
+        });
+      }
+      if (title === 'Screening') {
+        const qs = isMinor() ? SCREEN_CHILD : SCREEN_ADULT, box = $('vxScreen');
+        if (box.dataset.set !== String(isMinor())) {  // rebuild only if adult/child switched
+          box.dataset.set = String(isMinor());
+          box.innerHTML = qs.map((q, k) => `<div class="vx-q" role="radiogroup" aria-label="${esc(q)}"><p>${esc(q)}</p><div class="vx-yn">
+            <label><input type="radio" name="Q${k + 1}. ${esc(q)}" value="YES - review" required>Yes</label>
+            <label><input type="radio" name="Q${k + 1}. ${esc(q)}" value="No">No</label></div></div>`).join('');
+        }
+      }
+      if (title === 'Consent' && !$('sigName').value) {
+        $('sigName').value = `${$('firstName').value} ${$('lastName').value}`.trim();
+      }
+      if (title === 'Review') {
+        const f = new FormData(form), g = k => f.get(k) || '—';
+        const yes = [...f.entries()].filter(([k, v]) => /^Q\d/.test(k) && v.startsWith('YES')).length;
+        const sec = (h, body) => `<section><h3>${h}</h3><p>${esc(body)}</p></section>`;
+        $('vxReview').innerHTML =
+          sec('Patient', `${g('First name')} ${g('Last name')} · DOB ${g('Date of birth')}\n${g('Phone')} · ${g('email')}`) +
+          sec('Coverage', [g('Coverage'), f.get('Insurance plan'), f.get('Member ID')].filter(Boolean).join(' · ')) +
+          sec('Vaccines', f.getAll('Vaccines').join('\n')) +
+          sec('Screening', `${yes} answer${yes === 1 ? '' : 's'} marked Yes for pharmacist review${f.get('Notes for pharmacist') ? '\nNotes: ' + f.get('Notes for pharmacist') : ''}`) +
+          sec('Preferred appointment', `${new Date(g('Preferred date') + 'T00:00').toDateString()} at ${g('Preferred time')}`) +
+          sec('Consent', `Signed by ${g('Signed by')} (${g('Relationship to patient')})`);
+      }
+    }
+
+    // --- per-step checks beyond native required/pattern ---
+    function extraCheck(title) {
+      if (title === 'Patient' && ageMonths() < 0) return 'Date of birth can\'t be in the future.';
+      if (title === 'Vaccines' && !form.querySelector('[name=Vaccines]:checked')) return 'Select at least one vaccine to continue.';
+      if (title === 'Appointment') {
+        const d = new Date($('apptDate').value + 'T00:00').getDay();
+        if (d === 0 || d === 6) return 'We book vaccines Monday–Friday. Please pick a weekday.';
+      }
+    }
+
+    function show(i) {
+      step = i;
+      steps.forEach((s, k) => s.hidden = k !== i);
+      onEnter(i);
+      [...$('vxRail').children].forEach((li, k) => {
+        li.className = k < i ? 'done' : k === i ? 'active' : '';
+        li.querySelector('.num').textContent = k < i ? '✓' : k + 1;
+        k === i ? li.setAttribute('aria-current', 'step') : li.removeAttribute('aria-current');
+      });
+      $('vxBar').style.width = `${(i / steps.length) * 100}%`;
+      back.hidden = i === 0;
+      next.textContent = i === steps.length - 1 ? 'Send booking' : 'Continue';
+      err.style.display = 'none';
+      $('vxWizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function fail(msg) { err.textContent = msg; err.style.display = 'block'; }
+
+    back.addEventListener('click', () => show(step - 1));
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const inputs = [...steps[step].querySelectorAll('input, select, textarea')];
+      inputs.forEach(el => el.classList.toggle('error-border', !el.checkValidity()));
+      const bad = inputs.find(el => !el.checkValidity());
+      if (bad) { bad.focus(); return fail(bad.type === 'radio' ? 'Please answer every question.' : (bad.validationMessage || 'Please complete the highlighted fields.')); }
+      const msg = extraCheck(steps[step].dataset.title);
+      if (msg) return fail(msg);
+      if (step < steps.length - 1) return show(step + 1);
+
+      // final step: send
+      next.disabled = true; next.textContent = 'Sending…';
+      const data = new FormData(form);
+      data.set('Vaccines', data.getAll('Vaccines').join(', '));
+      const who = `${data.get('First name')} ${data.get('Last name')}`;
+      const when = `${data.get('Preferred date')} at ${data.get('Preferred time')}`;
+      try {
+        const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const j = await r.json();
+        if (!r.ok || String(j.success) !== 'true') throw new Error('form service unavailable');
+        $('vxDoneBody').innerHTML = `Thank you, ${esc(data.get('First name'))}. We'll call or text <b>${esc(data.get('Phone'))}</b> to confirm <b>${esc(when)}</b>.`;
+      } catch {
+        // Same fallback as the contact/refill forms: hand off to the visitor's email app
+        const body = [...data.entries()].filter(([k]) => !k.startsWith('_')).map(([k, v]) => `${k}: ${v}`).join('\n');
+        window.location.href = `mailto:${PHARMACY_EMAIL}?subject=${encodeURIComponent('Vaccine booking - ' + who)}&body=${encodeURIComponent(body)}`;
+        $('vxDoneTitle').textContent = 'One last step';
+        $('vxDoneBody').innerHTML = `Your email app has opened with your booking ready to go — just press Send. If it didn't open, call us at <a href="tel:209-868-1555">209-868-1555</a>.`;
+      }
+      $('vxWizard').hidden = true; $('vxDone').hidden = false;
+      $('vxDone').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    form.addEventListener('input', e => e.target.classList.remove('error-border'));
+    show(0);
+  })();
+  </script>
+</body>
+</html>

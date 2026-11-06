@@ -8,90 +8,67 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="js/header.js" defer></script>
   <script src="js/footer.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/cinema.css">
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+  <script src="js/cinema.js" defer></script>
+  <script type="module" src="js/cinema3d.js"></script>
 </head>
-<body>
+<body class="page-index">
 
   <!-- Custom Header component -->
   <custom-header active="home"></custom-header>
 
-  <!-- Hero Section -->
-  <header class="hero-section">
-    <div class="container hero-grid">
-      <div class="hero-content">
-        <div class="badge">
-          <span class="badge-dot"></span>
-          <span>OPEN & ACCEPTING NEW PATIENTS</span>
-        </div>
-        <h1 class="hero-title">Your neighborhood pharmacy, <span class="green-accent">redefined.</span></h1>
-        <p class="hero-description">From same-day delivery to dedicated long-term care, Stockton Pharmacy puts your wellness first — with the personal touch big chains can't match.</p>
-        
-        <div class="hero-ctas">
-          <a href="refill.html" class="btn btn-primary">
-            <span>Refill a Prescription</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
-          </a>
-          <a href="tel:209-868-1555" class="btn btn-outline">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-            <span>209-868-1555</span>
-          </a>
-        </div>
-
-        <div class="hero-meta">
-          <div class="stars-container">
-            <svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg class="star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <span style="font-weight: 500; font-size: 14px; opacity: 0.85;">Trusted locally</span>
-          
-          <div class="meta-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span style="font-size: 14px; opacity: 0.85;">Most insurance accepted</span>
-          </div>
-        </div>
+  <!-- Hero: one continuous 3D shot, scrubbed by scroll (cinema.js + cinema3d.js) -->
+  <section class="film" id="film" aria-label="Stockton Pharmacy">
+    <div class="film-stage">
+      <div class="film-canvas" data-film aria-hidden="true"><img class="stage-fallback" src="images/pharmacist_hero.png" alt=""></div>
+      <div class="film-veil" aria-hidden="true"></div>
+      <div class="cap cap--left" data-in="0" data-out=".15">
+        <p class="kicker">Stockton Pharmacy &nbsp;·&nbsp; Stockton, California</p>
+        <h1 class="display">Your neighborhood pharmacy,<br><em>redefined.</em></h1>
+        <p class="cap-lead">Prescriptions, vaccines and long-term care, with the personal touch big chains can't match.</p>
+        <div class="btn-row"><a class="btn btn--ink" href="refill.html">Refill a prescription</a><a class="btn btn--line" href="tel:209-868-1555">Call 209-868-1555</a></div>
       </div>
-
-      <div class="hero-image-wrapper">
-        <img class="main-hero-img" src="images/pharmacist_hero.png" alt="Friendly pharmacists helping client in a pharmacy">
-        
-        <div class="floating-card floating-card-1">
-          <div class="floating-icon-wrapper">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13" rx="2" ry="2"/>
-              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-              <circle cx="5.5" cy="18.5" r="2.5"/>
-              <circle cx="18.5" cy="18.5" r="2.5"/>
-            </svg>
-          </div>
-          <div class="floating-card-text">
-            <span class="floating-card-label">Same-day</span>
-            <span class="floating-card-value">Free Delivery</span>
-          </div>
-        </div>
-
-        <div class="floating-card floating-card-2">
-          <div class="floating-icon-wrapper green-bg">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 11 11 13 15 9"/>
-            </svg>
-          </div>
-          <div class="floating-card-text">
-            <span class="floating-card-label">Licensed</span>
-            <span class="floating-card-value">LTC Specialists</span>
-          </div>
-        </div>
+      <div class="cap cap--right" data-in=".17" data-out=".33">
+        <p class="kicker">01 &nbsp;—&nbsp; Prescriptions</p>
+        <h2 class="display">Every prescription,<br><em>filled with care.</em></h2>
+        <p class="cap-lead">New prescriptions, refills and transfers, checked by a pharmacist who takes the time to explain them.</p>
       </div>
+      <div class="cap cap--left" data-in=".36" data-out=".52">
+        <p class="kicker">02 &nbsp;—&nbsp; Prescription delivery</p>
+        <h2 class="display">Delivered to your door,<br><em>same day.</em></h2>
+        <p class="cap-lead">Homes, offices and care facilities across Stockton.</p>
+      </div>
+      <div class="cap cap--right" data-in=".6" data-out=".84">
+        <p class="kicker">03 &nbsp;—&nbsp; Med Sync &amp; long-term care</p>
+        <h2 class="display">Every dose,<br><em>in its place.</em></h2>
+        <p class="cap-lead">Morning, noon, evening and bedtime, sealed and labeled for each day of the week.</p>
+        <a class="btn btn--ink" href="services.html">See our services</a>
+      </div>
+      <div class="cap cap--center" data-in=".88" data-out="1.2">
+        <h2 class="display">Your medications,<br><em>simply handled.</em></h2>
+      </div>
+      <nav class="dock dock--film" aria-label="Quick actions" data-fade>
+        <a href="refill.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M20 11a8 8 0 0 0-14.9-3.9M4 4v4h4M4 13a8 8 0 0 0 14.9 3.9M20 20v-4h-4"/></svg></span>Refill<small>Ready or delivered</small></a>
+        <a href="contact.html?subject=Transfer%20Prescription"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>Transfer<small>We do the calling</small></a>
+        <a href="vaccines.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="m18 2 4 4M16 4l4 4M19 5l-9.5 9.5M14 6l4 4M6 18l-3 3M11 9l4 4-6 6H5v-4z"/></svg></span>Book a vaccine<small>Flu, COVID, shingles</small></a>
+        <a href="contact.html?subject=Delivery"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>Delivery<small>Same-day, local</small></a>
+        <a href="contact.html?subject=New%20Patient"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span>New patient<small>Sign up in minutes</small></a>
+      </nav>
+      <div class="film-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+      <div class="film-bar" aria-hidden="true"><i></i></div>
     </div>
-  </header>
+  </section>
+
+  <nav class="dock dock--float" aria-label="Quick actions (mobile)">
+        <a href="refill.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M20 11a8 8 0 0 0-14.9-3.9M4 4v4h4M4 13a8 8 0 0 0 14.9 3.9M20 20v-4h-4"/></svg></span>Refill<small>Ready or delivered</small></a>
+        <a href="contact.html?subject=Transfer%20Prescription"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>Transfer<small>We do the calling</small></a>
+        <a href="vaccines.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="m18 2 4 4M16 4l4 4M19 5l-9.5 9.5M14 6l4 4M6 18l-3 3M11 9l4 4-6 6H5v-4z"/></svg></span>Book a vaccine<small>Flu, COVID, shingles</small></a>
+        <a href="contact.html?subject=Delivery"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>Delivery<small>Same-day, local</small></a>
+        <a href="contact.html?subject=New%20Patient"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class=""><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span>New patient<small>Sign up in minutes</small></a>
+  </nav>
 
   <!-- Highlights Section -->
   <section class="highlights-section">
